@@ -1,0 +1,56 @@
+{
+  "name": "dsh-hdc-panel",
+  "version": "0.11.0",
+  "description": "DSH-native HarmonyOS dev panel in the right sidebar Start page: hdc device debugging tab, official-first versioned API docs, DevEco compile assistance, and standalone Command Line Tools support.",
+  "author": "inako",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1na-ko/dsh-hdc-panel.git"
+  },
+  "type": "module",
+  "main": "lib/host.js",
+  "exports": {
+    ".": {
+      "default": "./lib/host.js"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "assets",
+    "knowledge",
+    "docs",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    "notices.json"
+  ],
+  "scripts": {
+    "license-check": "node scripts/license-check.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "harmonyos",
+    "openharmony",
+    "arkts",
+    "hdc",
+    "plugin",
+    "agent"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,16 @@
+node_modules/
+*.tgz
+.dsh-hdc/
+.zcode/
+.DS_Store
+Thumbs.db
+CONTINUITY.md
+REVIEW-BRIEF-pr5.md
+`.hvigor/
+
+# local debug/verification sandbox.tmp-verify/
+# lockfile is not shipped (zero-runtime-dependency plugin)
+package-lock.json
+.pr6-copy/
+
+reference/
