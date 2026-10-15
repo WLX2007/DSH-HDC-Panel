@@ -1,7 +1,7 @@
 # dsh-hdc-panel
 
 > DSH 原生鸿蒙开发助手：`hdc` 设备闭环调试（看设备 → 截图 → 看图 → 改码 → 装包 → 验证）＋ 官方优先版本化知识层（离线 Tier-1 随包 + Gitee 云端按需 + SDK 机读 + 官方文档检索）＋ 可选官方 DevEco CLI 构建/签名通道。
-> A DSH-native HarmonyOS dev assistant: the hdc device loop (inspect → screenshot → view → fix → install → verify), an official-first version-classified knowledge layer (offline Tier-1 + on-demand Gitee Tier-2 + SDK-accurate reads + official docs search), and an optional official DevEco CLI build/sign backend.
+> A DSH-native HarmonyOS dev assistant: the hdc device loop (inspect → screenshot → view → fix → install → verify), an official-first version-classified knowledge layer (offline Tier-1 + on-demand Gitee Tier-2 + official KMS MCP Tier-3 + SDK-accurate reads + official docs search), and an optional official DevEco CLI build/sign backend.
 
 ## 定位
 
@@ -74,10 +74,11 @@
 
 ## hms_knowledge：分层官方知识
 
-官方知识（zh-CN，CC-BY-4.0）分两层，**都在同一个工具调用内自动衔接**：
+官方知识（zh-CN，CC-BY-4.0）分三层，**都在同一个工具调用内自动衔接**：
 
 - **Tier-1 随包内置**：28 篇高频 API 模块、窗口、导航与应用模型/ArkTS 指南节选（约 1.7MB），零网络离线可用，逐文件溯源
 - **Tier-2 云端按需**：任意 openharmony/docs 文档，首次读取自动从 Gitee 拉取并缓存到 `~/.dsh-hdc-panel/knowledge-remote/`（GitHub raw 国内网络不可达、官方文档站正文需登录，故 Gitee 为主通道）
+- **Tier-3 官方 KMS MCP**：华为官方开发者知识库 MCP 服务（`connect-api.cloud.huawei.com/api/developerknowledge/mcp`，匿名免登录），RAG 检索 + 完整 Markdown 正文，内容即官方最新版
 
 动作一览：
 
@@ -86,6 +87,8 @@
 | `catalog` / `read`（`id=`） | Tier-1 本地目录与分节阅读（先 TOC 后按小节名/序号读） |
 | `read`（`path=`） | 任意 openharmony/docs 文档：缓存命中直读，未命中自动拉取并缓存；`zh-cn/application-dev/` 前缀可省略 |
 | `search` | 一次调用同时检索 Tier-1 本地 + Tier-2 缓存，结果带 `tier` 标注 |
+| `official-search` | Tier-3 官方 RAG 检索（`query=` 自然语言，`topK=` 默认 5），返回片段 + 文档 name |
+| `official-read` | Tier-3 按 name 拉完整 Markdown 正文（`name=` 来自 official-search 结果，单次最多 10 篇） |
 | `ls` | 列 Gitee 文档目录（发现合法 path） |
 | `sync` | 批量拉取一个目录的文档入缓存（默认 20 篇，上限 200，已缓存的自动跳过） |
 | `cache` / `rm` | 缓存统计 / 移除单篇 |
@@ -93,6 +96,8 @@
 ```json
 {"name":"hms_knowledge","arguments":{"action":"search","keywords":"hilog 日志"}}
 {"name":"hms_knowledge","arguments":{"action":"read","path":"zh-cn/application-dev/dfx/hilog.md","section":"hilog日志格式说明"}}
+{"name":"hms_knowledge","arguments":{"action":"official-search","query":"UIAbility 生命周期","topK":5}}
+{"name":"hms_knowledge","arguments":{"action":"official-read","name":"alliance/document/cn/harmonyos-guides/uiability-lifecycle"}}
 ```
 
 ## 安装 / Installation
@@ -259,7 +264,7 @@ UI 输入实战经验（真机实测）：
 涉及 ArkTS/API 时先确定目标 API 版本，再按以下优先级：
 
 1. `hms_api`：本机 SDK 的机器可读声明和版本标签；
-2. `hms_knowledge`：官方知识（Tier-1 离线 + Tier-2 云端按需），适合概念和用法；
+2. `hms_knowledge`：官方知识（Tier-1 离线 + Tier-2 云端按需 + Tier-3 官方 KMS MCP），适合概念和用法；
 3. `hms_docs`：全量官方本地文档；
 4. `hms_api_change`：跨版本破坏性变更；
 5. `hms_lint`：本机官方规则验证。
@@ -314,7 +319,7 @@ Windows + DevEco Studio 6.1.1.300 + SDK API 24 + TCP 真机 + 模拟器（API 23
 - 29 个工具、5 个运行时 skill、4 个面板 REST 路由注册；
 - 设备闭环：UI 操作（tap/input/dump）、应用生命周期（stop → clear-data → uninstall → install → start）、崩溃抓取（jscrash 源码级堆栈）、双目标覆盖、无设备结构化降级；
 - 编译闭环：`switch_cwd`、ArkTS 32 文件检查、`build_project(clean=true)` 真实 clean → build → HAP 校验、`hms_build clean/build/run` 真实产物 + `missionVerified:true`、`start_app` 无 `hvd` 只列设备；
-- 知识层：Tier-1 28 篇读取、Tier-2 云端拉取（实网 + 缓存命中）、search 合并、ls/sync/cache/rm、hms_lint 57+ 规则索引；
+- 知识层：Tier-1 28 篇读取、Tier-2 云端拉取（实网 + 缓存命中）、search 合并、ls/sync/cache/rm、Tier-3 官方 KMS MCP 检索/全文（实网验证：UIAbility 生命周期检索 + 2 篇全文 88KB）、hms_lint 57+ 规则索引；
 - 端口转发 / 文件传输 / 目标管理（hdc_fport、hdc_file、hdc_target）真机验证。
 
 仍需人工覆盖：面板 GUI 视觉逐态、签名 OAuth 成功路径、不同 Studio/SDK 版本；macOS 宿主经社区报告（issue #7）实测验证（SDK API 26，截图/dump 路径已修复）。
@@ -330,6 +335,7 @@ Windows + DevEco Studio 6.1.1.300 + SDK API 24 + TCP 真机 + 模拟器（API 23
 - [x] 社区 issue 批次 #8-#13（DSH 0.2.0-rc.2 shell 契约迁移、bash 宿主探测、无 version.txt 的 CLT 世代门、构建产物判定、lint 报表落盘）
 - [x] hdc_mcp 能力移植（v0.11.1：hdc_fport / hdc_file / hdc_target + hdc_hilog 过滤扩展，共 29 工具）
 - [x] 知识库云端化（v0.12：`hms_knowledge` 同一工具内分层，Gitee 按需拉取 + 本地缓存，零 npm 依赖）
+- [x] 官方 KMS MCP 知识层（v0.12.1：`hms_knowledge` 新增 official-search / official-read，接入华为官方开发者知识库 MCP，匿名免登录）
 
 ## License
 
