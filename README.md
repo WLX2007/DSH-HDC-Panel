@@ -107,7 +107,7 @@
 dsh plugin --profile <name> add dsh-hdc-panel
 
 # 或直接从 GitHub 安装（纯 JS、无构建步骤，无需授权 prepare）/ or install straight from GitHub (plain JS, no build step, no prepare grant needed)
-dsh plugin --profile <name> add github:1na-ko/dsh-hdc-panel
+dsh plugin --profile <name> add github:WLX2007/DSH-HDC-Panel
 
 # 验证组合层，然后启动 / verify the composed layer, then boot
 dsh --profile <name> --dump-config   # 确认出现 dsh-hdc-panel 层 / confirms the dsh-hdc-panel layer

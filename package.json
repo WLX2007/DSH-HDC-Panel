@@ -1,11 +1,11 @@
 {
   "name": "dsh-hdc-panel",
   "version": "0.12.2",
-  "description": "DSH-native HarmonyOS dev panel in the right sidebar Start page: hdc device debugging tab, official-first versioned API docs, DevEco compile assistance, and standalone Command Line Tools support.",
-  "author": "inako",
+  "description": "DSH-native HarmonyOS dev panel in the right sidebar Start page: hdc device debugging loop, official-first tiered knowledge (official KMS MCP + offline excerpts + on-demand Gitee docs), versioned SDK API lookups, DevEco compile assistance, and standalone Command Line Tools support.",
+  "author": "WLX2007",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1na-ko/dsh-hdc-panel.git"
+    "url": "git+https://github.com/WLX2007/DSH-HDC-Panel.git"
   },
   "type": "module",
   "main": "lib/host.js",
@@ -49,6 +49,9 @@
     "openharmony",
     "arkts",
     "hdc",
+    "deveco-studio",
+    "devecocli",
+    "knowledge-mcp",
     "plugin",
     "agent"
   ],
