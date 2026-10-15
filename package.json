@@ -1,6 +1,6 @@
 {
   "name": "dsh-hdc-panel",
-  "version": "0.11.0",
+  "version": "0.12.2",
   "description": "DSH-native HarmonyOS dev panel in the right sidebar Start page: hdc device debugging tab, official-first versioned API docs, DevEco compile assistance, and standalone Command Line Tools support.",
   "author": "inako",
   "repository": {
