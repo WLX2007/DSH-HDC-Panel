@@ -1,0 +1,4 @@
+# Runtime artefacts of the dsh-hdc-mcp server
+.dsh-hdc-mcp/
+node_modules/
+*.log

@@ -1,0 +1,47 @@
+{
+  "name": "dsh-hdc-mcp",
+  "version": "1.0.0",
+  "description": "Standalone MCP server for HarmonyOS/OpenHarmony development: hdc device loop (observe -> locate -> act -> verify), versioned official API knowledge, and the optional official DevEco CLI build/sign backend. Independent of any MCP host.",
+  "author": "WLX2007",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "dsh-hdc-mcp": "bin/dsh-hdc-mcp.mjs"
+  },
+  "main": "src/server.mjs",
+  "exports": {
+    ".": "./src/server.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "knowledge",
+    "assets",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "start": "node bin/dsh-hdc-mcp.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "harmonyos",
+    "openharmony",
+    "arkts",
+    "hdc",
+    "deveco-studio",
+    "devecocli",
+    "knowledge-mcp",
+    "agent"
+  ],
+  "dependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

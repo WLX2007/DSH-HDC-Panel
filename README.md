@@ -1,6 +1,8 @@
 # dsh-hdc-panel
 
-> DSH 原生鸿蒙开发助手：`hdc` 设备闭环调试（看设备 → 截图 → 看图 → 改码 → 装包 → 验证）＋ 官方优先版本化知识层（官方 KMS MCP + 离线随包 + Gitee 云端按需 + SDK 机读 + 官方文档检索）＋ 可选官方 DevEco CLI 构建/签名通道。
+> **独立 MCP 服务**：本仓库的 `mcp/` 子目录提供同一套鸿蒙开发能力的**独立 MCP 服务**（`dsh-hdc-mcp`，stdio 传输，30 个工具），可直接挂到 Claude Code / CodeBuddy / Cursor 等任意 MCP 客户端，**不需要 DSH 宿主**。详见 [mcp/README.md](./mcp/README.md)。
+>
+> **DSH 原生鸿蒙开发助手**：`hdc` 设备闭环调试（看设备 → 截图 → 看图 → 改码 → 装包 → 验证）＋ 官方优先版本化知识层（官方 KMS MCP + 离线随包 + Gitee 云端按需 + SDK 机读 + 官方文档检索）＋ 可选官方 DevEco CLI 构建/签名通道。
 > A DSH-native HarmonyOS dev assistant: the hdc device loop (inspect → screenshot → view → fix → install → verify), an official-first version-classified knowledge layer (official KMS MCP + offline bundled + on-demand Gitee + SDK-accurate reads + official docs search), and an optional official DevEco CLI build/sign backend.
 
 ## 定位
@@ -48,10 +50,11 @@
 
 > 安装 / app / build 失败时按 11 条已知错误码附中文修复建议（9568332 签名未绑 UDID→AGC 登记设备、9568289/9568322 签名配置、1300002 空间不足…）；签名类错误附三类修复（AGC 证书配置 / 重装自签名 / 换 debug 签名）+ 直达 AGC 链接。
 
-### 官方工具链层（7 个工具）
+### 官方工具链层（8 个工具）
 
 | 工具 | 说明 |
 | --- | --- |
+| `project_create` | **创建鸿蒙工程**：封装官方 `devecocli create`，参数 appName（必填）/ projectPath / bundleName / apiLevel / deviceTypes；校验目标目录为空并核对生成的 build-profile.json5 等产物，失败返回 `{ok:false,error,hint}` |
 | `hms_setup` | 环境体检：hdc / DevEco Studio / SDK(API 版本) / devecocli / 设备五项 + 目标 API 版本三源解析（项目→设备→SDK）与不一致告警；CLT 形态额外回显 `apiVersion` 与根识别方式 |
 | `hms_build` | 官方构建/签名/运行通道：status / build / run / sign / clean；devecocli 缺失时自动回退本机 hvigorw + hdc_install + hdc_app 闭环 |
 | `hms_api` | 官方优先的版本化 API 知识：读本机 SDK `.d.ts`（`@since`/`@deprecated`/`@syscap` 精确到 API 版本），按目标版本分类"可用/已废弃/不可用" |
@@ -290,10 +293,12 @@ UI 输入实战经验（真机实测）：
 
 Web profile 注册以下路由：
 
-- `/api2/hdc-panel/panel-state`：设备、工具链、SDK/API 和面板状态；
+- `/api2/hdc-panel/panel-state`：设备、工具链、SDK/API、华为账号登录状态和面板状态；
 - `/api2/hdc-panel/select`：选择会话默认设备；
 - `/api2/hdc-panel/screenshot.jpeg`：当前目标截图；
-- `/api2/hdc-panel/hilog`：面板日志。
+- `/api2/hdc-panel/hilog`：面板日志；
+- `/api2/hdc-panel/auth-status`（GET）：`devecocli auth status` 登录态（用户名脱敏）；
+- `/api2/hdc-panel/auth-login`（POST）：后台发起 `devecocli auth login --no-prompt`（浏览器 OAuth，需人工完成），面板随后轮询登录态。
 
 ## 工具链探测和沙箱
 
@@ -316,7 +321,7 @@ Windows 探测顺序为：显式路径/环境变量 → 注册表（含 WOW6432N
 
 Windows + DevEco Studio 6.1.1.300 + SDK API 24 + TCP 真机 + 模拟器（API 23）已验证：
 
-- 29 个工具、5 个运行时 skill、4 个面板 REST 路由注册；
+- 30 个工具（含 `project_create`）、5 个运行时 skill、6 个面板 REST 路由注册（含登录态查询/登录发起）；
 - 设备闭环：UI 操作（tap/input/dump）、应用生命周期（stop → clear-data → uninstall → install → start）、崩溃抓取（jscrash 源码级堆栈）、双目标覆盖、无设备结构化降级；
 - 编译闭环：`switch_cwd`、ArkTS 32 文件检查、`build_project(clean=true)` 真实 clean → build → HAP 校验、`hms_build clean/build/run` 真实产物 + `missionVerified:true`、`start_app` 无 `hvd` 只列设备；
 - 知识层：Tier-1 28 篇读取、Tier-2 云端拉取（实网 + 缓存命中）、search 合并、ls/sync/cache/rm、Tier-3 官方 KMS MCP 检索/全文（实网验证：UIAbility 生命周期检索 + 2 篇全文 88KB）、hms_lint 57+ 规则索引；
